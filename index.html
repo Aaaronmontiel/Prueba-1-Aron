@@ -1,0 +1,62 @@
+ <!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Calculadora de Recarga Zinli</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; max-width: 400px; margin: auto; }
+    input, button { padding: 10px; font-size: 1em; margin: 5px 0; width: 100%; }
+    label { font-weight: bold; margin-top: 10px; display: block; }
+    .resultado { margin-top: 20px; font-size: 1.2em; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <h1>Calculadora Recarga Zinli</h1>
+
+  <label for="montoUSD">Monto a recargar (USD):</label>
+  <input type="number" id="montoUSD" min="1" step="0.01" placeholder="Ejemplo: 30" />
+
+  <label for="tasaBCV">Tasa BCV (Bs/USD):</label>
+  <input type="number" id="tasaBCV" min="1" step="0.01" value="97.42" />
+
+  <label for="tasaBinance">Tasa Binance (Bs/USD):</label>
+  <input type="number" id="tasaBinance" min="1" step="0.01" value="132" />
+
+  <button onclick="calcular()">Calcular monto a cobrar (Bs)</button>
+
+  <div class="resultado" id="resultado"></div>
+
+  <script>
+    function calcular() {
+      const montoUSD = parseFloat(document.getElementById('montoUSD').value);
+      const tasaBCV = parseFloat(document.getElementById('tasaBCV').value);
+      const tasaBinance = parseFloat(document.getElementById('tasaBinance').value);
+
+      if (!montoUSD || montoUSD < 1) {
+        alert('Por favor ingresa un monto válido mayor o igual a 1 USD.');
+        return;
+      }
+      if (!tasaBCV || tasaBCV <= 0 || !tasaBinance || tasaBinance <= 0) {
+        alert('Por favor ingresa tasas válidas.');
+        return;
+      }
+
+      let comisionUSD;
+      if (montoUSD <= 20) {
+        comisionUSD = 1;
+      } else {
+        comisionUSD = montoUSD * 0.07;
+      }
+
+      let totalUSD = montoUSD + comisionUSD;
+      let factor = tasaBinance / tasaBCV;
+      let totalAjustadoUSD = totalUSD * factor;
+      let totalBs = totalAjustadoUSD * tasaBCV;
+
+      document.getElementById('resultado').textContent = 
+        `Monto a cobrar en Bs: ${totalBs.toFixed(2)} Bs`;
+    }
+  </script>
+</body>
+</html>
